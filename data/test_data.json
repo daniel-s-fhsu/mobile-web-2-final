@@ -1,0 +1,43 @@
+{
+  "listings": [
+    {
+      "id": "listing-001",
+      "itemName": "TI-84 Plus Calculator",
+      "description": "Graphing calculator in good working condition. Includes batteries and a protective cover.",
+      "price": 45,
+      "category": "Electronics",
+      "condition": "Good",
+      "location": "Hutchinson, KS",
+      "imageUrl": "https://images.unsplash.com/photo-1648201637025-1c77b9be3013?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "sellerId": "user-001",
+      "sellerEmail": "student1@mail.fhsu.edu",
+      "createdAt": "2026-04-29T10:15:00-05:00"
+    },
+    {
+      "id": "listing-002",
+      "itemName": "Intro to Psychology Textbook",
+      "description": "Used textbook with light highlighting. Great for general education psychology courses.",
+      "price": 25,
+      "category": "Books",
+      "condition": "Used",
+      "location": "FHSU Campus",
+      "imageUrl": "https://images.unsplash.com/photo-1599488059863-ac95a7f49193?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "sellerId": "user-002",
+      "sellerEmail": "student2@mail.fhsu.edu",
+      "createdAt": "2026-04-29T10:20:00-05:00"
+    },
+    {
+      "id": "listing-003",
+      "itemName": "Desk Lamp",
+      "description": "Adjustable LED desk lamp with three brightness settings. Useful for dorm rooms or study spaces.",
+      "price": 15,
+      "category": "Home",
+      "condition": "Like New",
+      "location": "Hays, KS",
+      "imageUrl": "https://images.unsplash.com/photo-1519219788971-8d9797e0928e?q=80&w=1688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "sellerId": "user-003",
+      "sellerEmail": "student3@mail.fhsu.edu",
+      "createdAt": "2026-04-29T10:25:00-05:00"
+    }
+  ]
+}
