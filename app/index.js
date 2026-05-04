@@ -1,3 +1,3 @@
-import HomeRoute from '../routes/home-route';
+import MarketplacePage from '../page/marketplace-page';
 
-export default HomeRoute;
+export default MarketplacePage;
