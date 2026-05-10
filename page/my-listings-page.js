@@ -1,12 +1,26 @@
+import { Redirect } from 'expo-router';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 import ListingCard from '../components/listing-card/listing-card';
+import { useAuth } from '../context/authContext';
 import testData from '../data/test_data.json';
 
-const currentUserEmail = 'student1@mail.fhsu.edu';
-
 export default function MyListingsPage() {
-  const myListings = testData.listings.filter((listing) => listing.sellerEmail === currentUserEmail);
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Checking login...</Text>
+      </View>
+    );
+  }
+
+  if (!user) {
+    return <Redirect href="/auth" />;
+  }
+
+  const myListings = testData.listings.filter((listing) => listing.sellerEmail === user.email);
 
   return (
     <View style={styles.container}>
@@ -16,6 +30,7 @@ export default function MyListingsPage() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <ListingCard listing={item} />}
         contentContainerStyle={styles.list}
+        ListEmptyComponent={<Text>You do not have any listings yet.</Text>}
       />
     </View>
   );

@@ -1,7 +1,17 @@
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { useAuth } from '../../context/authContext';
+
 export default function TopNav() {
+  const router = useRouter();
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    router.replace('/');
+  };
+
   return (
     <View style={styles.nav}>
       <Link href="/" asChild>
@@ -14,11 +24,17 @@ export default function TopNav() {
           <Text style={styles.linkText}>My Listings</Text>
         </Pressable>
       </Link>
-      <Link href="/auth" asChild>
-        <Pressable style={styles.authLink}>
-          <Text style={styles.authLinkText}>Login / Sign Up</Text>
+      {user ? (
+        <Pressable style={styles.authLink} onPress={handleLogout}>
+          <Text style={styles.authLinkText}>Logout</Text>
         </Pressable>
-      </Link>
+      ) : (
+        <Link href="/auth" asChild>
+          <Pressable style={styles.authLink}>
+            <Text style={styles.authLinkText}>Login / Sign Up</Text>
+          </Pressable>
+        </Link>
+      )}
     </View>
   );
 }

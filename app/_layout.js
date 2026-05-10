@@ -2,13 +2,16 @@ import { Slot } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import TopNav from '../components/top-nav/top-nav';
+import { AuthProvider } from '../context/authContext';
 
 export default function RootLayout() {
   return (
-    <View style={styles.container}>
-      <TopNav />
-      <Slot />
-    </View>
+    <AuthProvider>
+      <View style={styles.container}>
+        <TopNav />
+        <Slot />
+      </View>
+    </AuthProvider>
   );
 }
 
