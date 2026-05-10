@@ -5,6 +5,7 @@ import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native
 import CreateListingForm from '../components/create-listing-form/create-listing-form';
 import EditListingForm from '../components/edit-listing-form/edit-listing-form';
 import ListingCard from '../components/listing-card/listing-card';
+import ListingSearch from '../components/listing-search/listing-search';
 import { useAuth } from '../context/authContext';
 import testData from '../data/test_data.json';
 import { createListing, deleteListing, getUserListings, updateListing } from '../services/listings';
@@ -22,6 +23,7 @@ const initialFormValues = {
 export default function MyListingsPage() {
   const { user, loading } = useAuth();
   const [savedListings, setSavedListings] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [listLoading, setListLoading] = useState(false);
   const [listErrorMessage, setListErrorMessage] = useState('');
   const [formValues, setFormValues] = useState(initialFormValues);
@@ -85,6 +87,7 @@ export default function MyListingsPage() {
 
   const seedListings = testData.listings.filter((listing) => listing.sellerEmail === user.email);
   const myListings = [...savedListings, ...seedListings];
+  const filteredListings = filterListingsByItemName(myListings, searchQuery);
 
   const updateFormValue = (fieldName, value) => {
     setFormValues((currentValues) => ({
@@ -242,7 +245,7 @@ export default function MyListingsPage() {
     <View style={styles.container}>
       <Text style={styles.header}>My Listings</Text>
       <FlatList
-        data={myListings}
+        data={filteredListings}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <MyListingRow
@@ -263,21 +266,24 @@ export default function MyListingsPage() {
         contentContainerStyle={styles.listContent}
         keyboardShouldPersistTaps="handled"
         ListHeaderComponent={
-          <CreateListingHeader
-            isOpen={isCreateFormOpen}
-            formValues={formValues}
-            errorMessage={formErrorMessage}
-            successMessage={formSuccessMessage}
-            saving={saving}
-            onCancel={closeCreateForm}
-            onChange={updateFormValue}
-            onOpen={openCreateForm}
-            onSubmit={handleCreateListing}
-          />
+          <View style={styles.listHeader}>
+            <ListingSearch value={searchQuery} onChange={setSearchQuery} />
+            <CreateListingHeader
+              isOpen={isCreateFormOpen}
+              formValues={formValues}
+              errorMessage={formErrorMessage}
+              successMessage={formSuccessMessage}
+              saving={saving}
+              onCancel={closeCreateForm}
+              onChange={updateFormValue}
+              onOpen={openCreateForm}
+              onSubmit={handleCreateListing}
+            />
+          </View>
         }
         ListEmptyComponent={
           <Text style={styles.emptyText}>
-            {listLoading ? 'Loading listings...' : 'You do not have any listings yet.'}
+            {getMyListingsEmptyMessage({ listLoading, myListings, searchQuery })}
           </Text>
         }
         ListFooterComponent={
@@ -286,6 +292,30 @@ export default function MyListingsPage() {
       />
     </View>
   );
+}
+
+function filterListingsByItemName(listings, searchQuery) {
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  if (!normalizedQuery) {
+    return listings;
+  }
+
+  return listings.filter((listing) =>
+    (listing.itemName ?? '').toLowerCase().includes(normalizedQuery)
+  );
+}
+
+function getMyListingsEmptyMessage({ listLoading, myListings, searchQuery }) {
+  if (listLoading) {
+    return 'Loading listings...';
+  }
+
+  if (searchQuery.trim() && myListings.length > 0) {
+    return 'No listings match your search.';
+  }
+
+  return 'You do not have any listings yet.';
 }
 
 function CreateListingHeader({
@@ -453,6 +483,9 @@ const styles = StyleSheet.create({
   listContent: {
     gap: 12,
     paddingBottom: 24,
+  },
+  listHeader: {
+    gap: 12,
   },
   createPrompt: {
     alignItems: 'flex-start',
