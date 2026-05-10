@@ -6,7 +6,13 @@ Basic Expo marketplace app using Expo Router.
 
 ```bash
 npm install
-npm run web
+npx expo start
+```
+
+To start directly in the browser:
+
+```bash
+npx expo start --web
 ```
 
 ## Current Structure

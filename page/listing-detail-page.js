@@ -1,14 +1,71 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import testData from '../data/test_data.json';
+import { getListingById } from '../services/listings';
 
 export default function ListingDetailPage({ listingId }) {
-  const listing = testData.listings.find((item) => item.id === listingId);
+  const localListing = useMemo(
+    () => testData.listings.find((item) => item.id === listingId),
+    [listingId]
+  );
+  const [remoteListing, setRemoteListing] = useState(null);
+  const [loading, setLoading] = useState(!localListing);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (localListing || !listingId) {
+      setRemoteListing(null);
+      setLoading(false);
+      setErrorMessage('');
+      return;
+    }
+
+    let isMounted = true;
+
+    async function loadListing() {
+      setLoading(true);
+      setErrorMessage('');
+
+      try {
+        const listing = await getListingById(listingId);
+
+        if (isMounted) {
+          setRemoteListing(listing);
+        }
+      } catch {
+        if (isMounted) {
+          setErrorMessage('Could not load this listing.');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadListing();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [listingId, localListing]);
+
+  const listing = localListing ?? remoteListing;
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Loading listing...</Text>
+      </View>
+    );
+  }
 
   if (!listing) {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Listing not found</Text>
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
       </View>
     );
   }
@@ -20,7 +77,6 @@ export default function ListingDetailPage({ listingId }) {
       <Text style={styles.price}>${listing.price}</Text>
 
       <View style={styles.details}>
-        <DetailRow label="ID" value={listing.id} />
         <DetailRow label="Description" value={listing.description} />
         <DetailRow label="Category" value={listing.category} />
         <DetailRow label="Condition" value={listing.condition} />
@@ -85,5 +141,9 @@ const styles = StyleSheet.create({
   },
   value: {
     color: '#222',
+  },
+  errorText: {
+    color: '#b00020',
+    fontWeight: '600',
   },
 });

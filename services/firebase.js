@@ -1,6 +1,6 @@
 import { initializeApp, getApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, initializeFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
@@ -15,7 +15,15 @@ const firebaseConfig = {
 const firebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 const auth = getAuth(firebaseApp);
-const db = getFirestore(firebaseApp);
+let db;
+
+try {
+  db = initializeFirestore(firebaseApp, {
+    experimentalForceLongPolling: true,
+  });
+} catch {
+  db = getFirestore(firebaseApp);
+}
 const storage = getStorage(firebaseApp);
 
 export { auth, db, firebaseApp, storage };
