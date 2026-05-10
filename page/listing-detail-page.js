@@ -1,5 +1,6 @@
+import { Link } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import testData from '../data/test_data.json';
 import { getListingById } from '../services/listings';
@@ -82,9 +83,24 @@ export default function ListingDetailPage({ listingId }) {
         <DetailRow label="Condition" value={listing.condition} />
         <DetailRow label="Location" value={listing.location} />
         <DetailRow label="Seller Email" value={listing.sellerEmail} />
+        {listing.sellerId ? <SellerInformationLink listing={listing} /> : null}
         <DetailRow label="Created At" value={listing.createdAt} />
       </View>
     </ScrollView>
+  );
+}
+
+function SellerInformationLink({ listing }) {
+  const href = `/seller/${encodeURIComponent(listing.sellerId)}?email=${encodeURIComponent(
+    listing.sellerEmail ?? ''
+  )}`;
+
+  return (
+    <Link href={href} asChild>
+      <Pressable style={styles.linkRow}>
+        <Text style={styles.linkText}>Seller information</Text>
+      </Pressable>
+    </Link>
   );
 }
 
@@ -141,6 +157,15 @@ const styles = StyleSheet.create({
   },
   value: {
     color: '#222',
+  },
+  linkRow: {
+    borderBottomColor: '#eee',
+    borderBottomWidth: 1,
+    padding: 12,
+  },
+  linkText: {
+    color: '#1f5fbf',
+    fontWeight: '700',
   },
   errorText: {
     color: '#b00020',

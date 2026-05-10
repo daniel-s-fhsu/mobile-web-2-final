@@ -70,6 +70,23 @@ export async function getListings() {
   return snapshot.docs.map(mapListingDocument).sort(sortByCreatedAtDesc);
 }
 
+export async function getSellerListings(sellerId) {
+  if (!sellerId) {
+    return [];
+  }
+
+  const listingsQuery = query(
+    collection(db, LISTINGS_COLLECTION),
+    where('sellerId', '==', sellerId)
+  );
+  const snapshot = await withFirestoreTimeout(
+    getDocs(listingsQuery),
+    'Loading seller listings timed out. Check your Firestore rules and network connection.'
+  );
+
+  return snapshot.docs.map(mapListingDocument).sort(sortByCreatedAtDesc);
+}
+
 export async function getListingById(listingId) {
   const listingRef = doc(db, LISTINGS_COLLECTION, listingId);
   const snapshot = await withFirestoreTimeout(
